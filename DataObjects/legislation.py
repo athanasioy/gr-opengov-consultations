@@ -19,3 +19,6 @@ class Legislation(Base):
     scrap_url: Mapped[Optional[str]] = mapped_column(String(1000))
     final_legislation_id: Mapped[int] = mapped_column(ForeignKey("Legislation.id"), nullable=True)
     articles: Mapped[List["Article"]] = relationship(back_populates="legislation")
+
+    def __repr__(self) ->str:
+        return f"Legislation(id={self.id}, title={self.title}, ministry={self.ministry}, date_posted={self.date_posted})"

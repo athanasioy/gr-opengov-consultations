@@ -16,3 +16,6 @@ class Article(Base):
 
     legislation: Mapped["Legislation"] = relationship(back_populates="articles")
     public_consultations: Mapped[List["PublicConsultation"]] = relationship(back_populates="articles")
+
+    def __repr__(self) -> str:
+        return f"Article(id={self.id}, number={self.number}, title={self.title}, text={self.text[:50]}, legislation_id={self.legislation_id})"

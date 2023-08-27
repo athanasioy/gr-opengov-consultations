@@ -16,3 +16,6 @@ class PublicConsultation(Base):
     article_id: Mapped[int] = mapped_column(ForeignKey("Article.id"))
     articles: Mapped["Article"] = relationship(back_populates="public_consultations")
 
+    def __repr__(self) -> str:
+        return f"PublicConsultation(id={self.id}, reporter={self.reporter}, date_reported={self.date_reported}, text={self.text[50:]})"
+

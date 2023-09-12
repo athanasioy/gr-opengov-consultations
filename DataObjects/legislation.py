@@ -18,6 +18,7 @@ class Legislation(Base):
     legislation_pdf_url: Mapped[Optional[str]] = mapped_column(String(1000))
     scrap_url: Mapped[Optional[str]] = mapped_column(String(1000))
     final_legislation_id: Mapped[int] = mapped_column(ForeignKey("Legislation.id"), nullable=True)
+    final_legislation: Mapped["Legislation"] = relationship()
     articles: Mapped[List["Article"]] = relationship(back_populates="legislation")
     fek_number: Mapped[Optional[str]] = mapped_column(String(100))
     legislation_type: Mapped[Optional[str]] = mapped_column(String(100))

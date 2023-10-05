@@ -65,6 +65,8 @@ with pathObj.open() as file:
     print(file.read())
 print()
 
+# delete file with Path.unlink
+
 # Shorter version
 print("Shorter Version:  pathObj.read_text() ==>...")
 print(pathObj.read_text())

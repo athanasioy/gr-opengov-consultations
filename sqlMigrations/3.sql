@@ -1,0 +1,2 @@
+ALTER TABLE Legislation
+ALTER COLUMN title NVARCHAR(15000);

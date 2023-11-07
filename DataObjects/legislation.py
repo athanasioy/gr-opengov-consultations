@@ -27,6 +27,7 @@ class Legislation(Base):
 
     law_number: Mapped[Optional[str]] = mapped_column(String(100))
     no_final_legislation_reason: Mapped[Optional[str]] = mapped_column(String(200))
+    is_public_consultation: Mapped[int] = mapped_column()
 
     def __repr__(self) ->str:
         return f"Legislation(id={self.id}, title={self.title}, ministry={self.ministry}, date_posted={self.date_posted})"

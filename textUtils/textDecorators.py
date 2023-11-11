@@ -1,13 +1,14 @@
 from abc import ABC,abstractmethod
 import re
+import string
 def text_to_numeric(text:str) -> int:
     numbers_in_full_text:list[tuple[str,int]] = [
         ("πρώτο",1),
         ("δεύτερο",2),
         ("τρίτο",3),
         ("τέταρτο",4),
-        ("πέμπτο",5),  # greek μ encoded as ce bc in utf-8
-        ("πέµπτο",5),  # MICRO SIGN "µ" encoded as c2 b5 in utf-8 PRESENT IN 1247_articles
+        ("πέμπτο",5),  # greek μ encoded as "ce bc" in utf-8
+        ("πέµπτο",5),  # MICRO SIGN "µ" encoded as "c2 b5" in utf-8 PRESENT IN 1247_articles
         ("έκτο",6),
         ("έβδομο",7),  # greek μ encoded as ce bc in utf-8
         ("έβδοµο",7),   # MICRO SIGN "µ" encoded as c2 b5 in utf-8 PRESENT IN 1247_articles
@@ -81,7 +82,16 @@ class RemoveDashAndNewLineDecorator(Decorator):
         if self._decorated is not None:
             s = self._decorated.execute(s)
         return s
-    
+
+
+class RemovePunctuationDecorator(Decorator):
+    def execute(self, s: str) -> str:
+        transtable = str.maketrans('','',string.punctuation)
+        s = s.translate(transtable)
+        if self._decorated is not None:
+            s = self._decorated.execute(s)
+        return s
+
 class TextDecoratorChainFactory():
     @staticmethod
     def createDecoratorChain(applyLower:bool) -> Decorator:

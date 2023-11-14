@@ -2,6 +2,7 @@
 		Article.Number,
 		Article.legislation_id,
 		map.MaxArticleToMap,
+		FinalArticle.text,
 		--FinaLegislationArticles.Number as FinalArtNumber,
 		coalesce(row_number() OVER (PARTITION by Article.legislation_id,map.MaxArticleToMap order by CAST(Article.number AS INT)) -1 + map.MaxArticleToMap, Article.number) as joinNum
 		
@@ -18,5 +19,7 @@
 				Article.number
  
  ) as map on map.legislation_id = Article.legislation_id and map.number=Article.number
+ LEFT JOIN Article as FinalArticle on 	FinalArticle.legislation_id = Legislation.final_legislation_id
+										--AND FinalArticle.number = coalesce(row_number() OVER (PARTITION by Article.legislation_id,map.MaxArticleToMap order by CAST(Article.number AS INT)) -1 + map.MaxArticleToMap, Article.number)
 
 												

@@ -7,7 +7,7 @@ print(module_path)
 if module_path not in sys.path:
     sys.path.append(module_path)
 
-from textUtils.textDecorators import RemoveNewLineDecorator, RemoveDashAndNewLineDecorator,TextDecoratorChainFactory, TrimWhiteSpaceDecorator
+from textUtils.textDecorators import RemoveNewLineDecorator, RemoveDashAndNewLineDecorator,TextDecoratorChainFactory, TrimWhiteSpaceDecorator, ReplaceWrongGreekMuCharacterDecorator
 
 
 def test_newLine_removal() -> None:
@@ -41,3 +41,10 @@ def test_chain_decorator() -> None:
     decoratorChain = TextDecoratorChainFactory.createDecoratorChain(applyLower=True)
     assert(decoratorChain.execute(txt)=="1. εάν η Εθνική Αρχή Κυβερνοασφάλειας, αφότου διεξαγάγει αξιολόγηση ή έλεγχο σύµφωνα µε το άρθρο 36,".lower())
            
+def test_greek_mu_decorator()->None:
+    s1 = "νομίμου" # correct
+    s2 = "νοµίµου" # incorrect
+    assert s1 != s2
+    decorator = ReplaceWrongGreekMuCharacterDecorator(None)
+    s2 = decorator.execute(s2)
+    assert s1 == s2

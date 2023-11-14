@@ -92,9 +92,26 @@ class RemovePunctuationDecorator(Decorator):
             s = self._decorated.execute(s)
         return s
 
+class ReplaceWrongGreekMuCharacterDecorator(Decorator):
+    def execute(self, s: str) -> str:
+        wrong_greek_mu = bytes.decode(b"\xc2\xb5", encoding='utf-8')
+        correct_greek_mu = bytes.decode(b"\xce\xbc", encoding='utf-8')
+        s = s.replace(wrong_greek_mu,correct_greek_mu)
+        if self._decorated is not None:
+            s = self._decorated.execute(s)
+        return s
+
+        
 class TextDecoratorChainFactory():
     @staticmethod
     def createDecoratorChain(applyLower:bool) -> Decorator:
+        """Decorators are applied in a Last-In First-Out fashion.
+        I.E:
+        TopDecorator = RemoveDashAndNewLineDecorator(None)
+        TopDecorator = TrimWhiteSpaceDecorator(TopDecorator)
+        Execution:
+        TrimWhiteSpaceDecorator -> RemoveDashAndNewLineDecorator
+        """
         if applyLower:
             TopDecorator = RemoveNewLineDecorator(StrLower())
         else:

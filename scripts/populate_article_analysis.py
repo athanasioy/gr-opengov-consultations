@@ -11,34 +11,35 @@ from sqlalchemy import create_engine
 from typing import Any
 import configparser
 from pprint import pprint
-from textUtils.textAlgorithms import LineDifferenceAlgorithm
+from text_utils.textAlgorithms import LineDifferenceAlgorithm, TexteDiffAlgorithm,TextSimilarityAlgorithm
 from data_objects.legislation import Legislation
 from data_objects.public_consultation import PublicConsultation
 from data_objects.article import Article
 from datetime import datetime, timedelta,date
 
-def create_article_analysis_dictionary(row,
-                                       DifferenceAlgorithm:LineDifferenceAlgorithm) -> dict[str,Any]:
+def create_article_analysis_dictionary(sqlRow,
+                                       DifferenceAlgorithm:TexteDiffAlgorithm,
+                                       SimilarityAlgorith:TextSimilarityAlgorithm) -> dict[str,Any]:
     strptime_format = r"%Y-%m-%d"
     insert_params = {}
-    p_articleID = row[0]
-    f_articleID = row[6]
-    p_legislation_id=row[1]
-    p_date_str = row[4]
-    f_date_str = row[9]
+    p_articleID = sqlRow[0]
+    f_articleID = sqlRow[6]
+    p_legislation_id=sqlRow[1]
+    p_date_str = sqlRow[4]
+    f_date_str = sqlRow[9]
     if p_date_str and f_date_str:
         time_delta:timedelta = datetime.strptime(f_date_str,strptime_format)-datetime.strptime(p_date_str,strptime_format)
         days_diff = time_delta.days
     else:
         days_diff = None
-    total_comments = row[11] or 0
-    comments_allowed = row[10]
-    p_text = row[3]
-    f_text = row[8]
+    total_comments = sqlRow[11] or 0
+    comments_allowed = sqlRow[10]
+    p_text = sqlRow[3]
+    f_text = sqlRow[8]
     diff_count = DifferenceAlgorithm.calculate_differences(p_text,f_text)
-    similarity_ratio = DifferenceAlgorithm.calculate_similarity(p_text,f_text)
-    p_articleNo = row[2]
-    f_articleNo = row[5]
+    similarity_ratio = SimilarityAlgorith.calculate_similarity(p_text,f_text)
+    p_articleNo = sqlRow[2]
+    f_articleNo = sqlRow[5]
 
     insert_params["p_articleID"] = p_articleID
     insert_params["f_articleID"] = f_articleID
@@ -100,9 +101,9 @@ def main():
     with engine.connect() as con:
         rows = con.execute(text(sqlText))
 
-        for idx,row in enumerate(rows):
-            # pprint(row[9])
-            insert_params = create_article_analysis_dictionary(row,diffAlgorithm)
+        for idx,sqlRow in enumerate(rows):
+            # pprint(sqlRow[9])
+            insert_params = create_article_analysis_dictionary(sqlRow,diffAlgorithm,diffAlgorithm)
             con.execute(text(insertText),insert_params)
             if idx%500==0:
                 print(idx, datetime.now() )

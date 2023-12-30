@@ -2,7 +2,7 @@ from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import date,datetime
 
-from DataObjects.base import Base
+from data_objects.base import Base
 
 
 class PublicConsultation(Base):

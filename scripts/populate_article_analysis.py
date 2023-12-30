@@ -12,9 +12,9 @@ from typing import Any
 import configparser
 from pprint import pprint
 from textUtils.textAlgorithms import LineDifferenceAlgorithm
-from DataObjects.legislation import Legislation
-from DataObjects.public_consultation import PublicConsultation
-from DataObjects.article import Article
+from data_objects.legislation import Legislation
+from data_objects.public_consultation import PublicConsultation
+from data_objects.article import Article
 from datetime import datetime, timedelta,date
 
 def create_article_analysis_dictionary(row,

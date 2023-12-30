@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, ForeignKey
-from DataObjects.base import Base
+from data_objects.base import Base
 from typing import List, Optional
 
 class Article(Base):

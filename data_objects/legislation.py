@@ -4,7 +4,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey
 from datetime import date
 from sqlalchemy import String
-from DataObjects.base import Base
+from data_objects.base import Base
 
 
 class Legislation(Base):

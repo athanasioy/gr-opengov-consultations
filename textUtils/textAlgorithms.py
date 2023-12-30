@@ -18,12 +18,16 @@ class LineDifferenceAlgorithm:
 
 
     def calculate_differences(self,s1:str,s2:str) -> int:
-        diffs = difflib.ndiff(s1.split(" "),s2.split(" "))
+        s1_l = s1.split(" ") if s1 is not None else ""
+        s2_l = s2.split(" ") if s2 is not None else ""
+        diffs = difflib.ndiff(s1_l,s2_l)
         count = sum((1 for i in diffs if i[0]=='+' or i[0]=='-'))
         return count
 
     def show_diffs(self,s1:str,s2:str) -> list[str]:
-        deltas = list(difflib.ndiff(s1.split(" "),s2.split(" ")))
+        s1_l = s1.split(" ") if s1 is not None else ""
+        s2_l = s2.split(" ") if s2 is not None else ""
+        deltas = list(difflib.ndiff(s1_l,s2_l))
         return deltas
 
     def calculate_similarity(self,s1:str,s2:str) -> float:
@@ -32,6 +36,8 @@ class LineDifferenceAlgorithm:
             M is the number of matches
             T is the total number of elements
         """ 
+        s1 = s1 or ""
+        s2 = s2 or ""
         self._seqMatcher.set_seqs(s1,s2)
 
         return self._seqMatcher.ratio()

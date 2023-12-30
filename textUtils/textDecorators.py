@@ -119,4 +119,5 @@ class TextDecoratorChainFactory():
         
         TopDecorator = RemoveDashAndNewLineDecorator(TopDecorator)
         TopDecorator = TrimWhiteSpaceDecorator(TopDecorator)
+        TopDecorator = ReplaceWrongGreekMuCharacterDecorator(TopDecorator)
         return TopDecorator

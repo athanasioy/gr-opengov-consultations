@@ -2,7 +2,7 @@ import sys
 import os
 from  pathlib import Path
 from pprint import pprint
-from textUtils.textDecorators import ReplaceWrongGreekMuCharacterDecorator, RemovePunctuationDecorator
+from text_utils.textDecorators import ReplaceWrongGreekMuCharacterDecorator, RemovePunctuationDecorator
 # C:\Users\aneme\vscode\publicConsulationScrap
 module_path = os.path.abspath(os.path.join('.'))
 print(module_path)
@@ -10,7 +10,7 @@ print(module_path)
 if module_path not in sys.path:
     sys.path.append(module_path)
 
-from textUtils.textAlgorithms import LineDifferenceAlgorithm
+from text_utils.textAlgorithms import LineDifferenceAlgorithm
 import pytest
 
 

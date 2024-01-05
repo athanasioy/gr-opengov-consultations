@@ -5,16 +5,13 @@ print(module_path)
 if module_path not in sys.path:
     sys.path.append(module_path)
 
-from sqlalchemy.sql import text, select
-from sqlalchemy.orm import Session
+from sqlalchemy.sql import text
 from sqlalchemy import create_engine
 from typing import Any
 import configparser
 from pprint import pprint
 from text_utils.textAlgorithms import LineDifferenceAlgorithm, TexteDiffAlgorithm,TextSimilarityAlgorithm
-from data_objects.legislation import Legislation
-from data_objects.public_consultation import PublicConsultation
-from data_objects.article import Article
+
 from datetime import datetime, timedelta,date
 
 def create_article_analysis_dictionary(sqlRow,

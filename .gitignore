@@ -29,6 +29,7 @@ data
 referenece_guides/
 text_files/
 bu/
+pdf_files/
 
 
 # PyInstaller
@@ -171,4 +172,3 @@ cython_debug/
 *.zip
 *.rar
 *.xlsx
-*.txt

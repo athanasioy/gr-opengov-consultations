@@ -48,10 +48,12 @@ class GreekLongFormerEncoder:
         MODEL_NAME = "dimitriz/st-greek-media-longformer-4096"
         self._tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
         self._model = AutoModel.from_pretrained(MODEL_NAME)
+        self._device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self._model.to(self._device)
 
     def get_embeddings_batch(self, input_text:list[str]) -> tuple[list[np.ndarray], list[int]]:
-        tokens = self._tokenizer(input_text,padding=True,truncation=True,return_tensors="pt")
-        tokens_original = self._tokenizer(input_text,padding=True,return_tensors="pt")
+        tokens = self._tokenizer(input_text,padding=True,truncation=True,return_tensors="pt").to(self._device)
+        tokens_original = self._tokenizer(input_text,padding=True,return_tensors="pt").to(self._device)
         tokens_size = tokens_original['attention_mask'].sum(dim=1).tolist()
         
         with torch.no_grad():

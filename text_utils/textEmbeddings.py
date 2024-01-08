@@ -61,6 +61,10 @@ class GreekLongFormerEncoder:
             
         embeddings = mean_pooling(output,tokens['attention_mask'])
         vectors = torch.split(embeddings,1,dim=0)
-        embeddings_list = [v.squeeze().numpy() for v in vectors]
+        if torch.cuda.is_available():
+            embeddings_list = [v.squeeze().cpu().numpy() for v in vectors]
+        else:
+            embeddings_list = [v.squeeze().numpy() for v in vectors]
+            
         
         return (embeddings_list,tokens_size)

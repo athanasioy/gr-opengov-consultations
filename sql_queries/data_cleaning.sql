@@ -142,3 +142,11 @@ where Legislation.no_final_legislation_reason='Not Found';
 UPDATE Legislation
 set legislation_type='Bill'
 where  legislation_type='Νόμος';
+
+UPDATE Legislation
+SET legislation_type='Joint Ministerial Decision'
+WHERE ID = 606
+
+UPDATE Legislation
+SET legislation_type='Bill'
+WHERE ID = 889

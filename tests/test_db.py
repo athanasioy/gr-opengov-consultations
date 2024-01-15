@@ -53,30 +53,29 @@ def test_articleSimilarity():
     sqlalchemy_conn_string = config.get('DEFAULT', 'db_file')
     engine = create_engine(sqlalchemy_conn_string)
     
+    p_articleID=1
+    f_articleID=2
+    sim=0.5
+    method="someMethod"
     with Session(engine) as sess:
-        p_articleID=1
-        f_articleID=2
-        sim=0.5
-        method="someMethod"
-        with Session(engine) as sess:
-            articleSim = ArticleSimilarity(p_articleID=p_articleID,
-                                        f_articleID=f_articleID,
-                                        similarity=sim,
-                                        method=method
-                                        )
-            sess.add(articleSim)
-            # commits without errors
-            sess.commit()
-        
-        with Session(engine) as sess:
-            stmt = select(ArticleSimilarity).where(and_(
-                ArticleSimilarity.p_articleID==1,
-                ArticleSimilarity.f_articleID==2,
-                ArticleSimilarity.method=="someMethod"
-            ))
-            obj = sess.execute(stmt).scalar_one()
-            assert isinstance(obj, ArticleSimilarity)
-            sess.delete(obj)
-            # delete object
-            sess.commit()
+        articleSim = ArticleSimilarity(p_articleID=p_articleID,
+                                    f_articleID=f_articleID,
+                                    similarity=sim,
+                                    method=method
+                                    )
+        sess.add(articleSim)
+        # commits without errors
+        sess.commit()
+    
+    with Session(engine) as sess:
+        stmt = select(ArticleSimilarity).where(and_(
+            ArticleSimilarity.p_articleID==1,
+            ArticleSimilarity.f_articleID==2,
+            ArticleSimilarity.method=="someMethod"
+        ))
+        obj = sess.execute(stmt).scalar_one()
+        assert isinstance(obj, ArticleSimilarity)
+        sess.delete(obj)
+        # delete object
+        sess.commit()
             

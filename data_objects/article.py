@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import String, ForeignKey
+from sqlalchemy import String, ForeignKey, Integer
 from data_objects.base import Base
 from typing import List, Optional
 
@@ -19,3 +19,15 @@ class Article(Base):
 
     def __repr__(self) -> str:
         return f"Article(id={self.id}, number={self.number}, title={self.title}, text={self.text[:50]}, legislation_id={self.legislation_id})"
+
+class ArticleSimilarity(Base):
+    __tablename__= "ArticleSimilarity"
+    
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    p_articleID: Mapped[int] = mapped_column(ForeignKey("Article.id"))
+    f_articleID: Mapped[int] = mapped_column(ForeignKey("Article.id"))
+    similarity: Mapped[float] = mapped_column()
+    method: Mapped[str] = mapped_column()
+
+    def __repr__(self) -> str:
+        return f"ArticleSimilarity(id={self.id}, p_articleID={self.p_articleID}, f_articleID={self.f_articleID})"

@@ -2,14 +2,13 @@ from typing import Protocol
 import difflib
 
 class TexteDiffAlgorithm(Protocol):
-    def calculate_differences(txt1:str,txt2:str) -> int:
+    def calculate_differences(self,txt1:str,txt2:str) -> int:
         """Calculate the number of differences between two strings"""
-        pass
 
 class TextSimilarityAlgorithm(Protocol):
-    def calculate_similarity(txt1:str,txt2:str) -> float:
+    method_name:str
+    def calculate_similarity(self,txt1:str,txt2:str) -> float:
         """calculate the similarity between two texts"""
-        pass
 
 
 class LineDifferenceAlgorithm:

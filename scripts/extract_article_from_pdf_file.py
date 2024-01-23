@@ -231,7 +231,8 @@ def main():
                 articleObj.text = text_decorator.execute(text_and_title['text'])
                 articleObj.title = text_decorator.execute(text_and_title['title'])
 
-                
+            if test_mode:
+                print(articleObj) 
         if not test_mode:
             sess.commit()
 

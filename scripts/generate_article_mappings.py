@@ -23,15 +23,23 @@ parser.add_argument("-r", "--row_limit",
                     help="Defines the range of plus-minus search of an article match. If 0, no limit")
 parser.add_argument("-f","--file",
                     help="if given a file, mappings will be generated only for the selected consultations")
+parser.add_argument("-i","--ids", help="If given, mappings will be generated for a specific id",
+                    nargs="*",type=int)
+parser.add_argument("-t","--test_mode",action="store_true", help="Test Mode.Does not commit to db", default=False)
+
+parser.add_argument("-o","--match_once",action="store_true",help="Match voted articles only once", default=False)
 
 args = parser.parse_args()
 def generate_cross_similarities(
     article: Article,
     candidate_articles: list[Article],
     similarity_algo: TextSimilarityAlgorithm,
+    ids_taken:list[int]
 ) -> dict[int, float]:
     similarity_dict = {}
     for candidate_article in candidate_articles:
+        if candidate_article.id in ids_taken:
+            continue
         similarity = similarity_algo.calculate_similarity(
             article.text, candidate_article.text
         )
@@ -48,6 +56,8 @@ def main():
     ROW_LIMIT = args.row_limit
     if ROW_LIMIT ==0:
         ROW_LIMIT =999
+    
+    legislations_to_consider = []
 
     legislation_file_path = args.file
     if legislation_file_path:
@@ -62,12 +72,18 @@ def main():
         if not isinstance(legislations_to_consider,list):
             print("File must contain only public consultation id seperated by new line")
             raise SystemExit(1)
+    
+    legislation_ids = args.ids
+    if legislation_ids:
+        legislations_to_consider = legislations_to_consider + list(legislation_ids)
+    
+    test_mode = args.test_mode
 
     voted_articles_aliased = aliased(Article, name="voted_articles")
     similarity_algo = LineDifferenceAlgorithm()
     with Session(engine) as sess:
 
-        if legislations_to_consider:  # If file is passed, consider only legislations in file
+        if legislations_to_consider:  # If list is not empty, consider only legislations passed as args
             proposed_articles_stmt = (
                 select(Article)
                 .join(Legislation.articles)
@@ -99,6 +115,7 @@ def main():
         cnt = sess.execute(proposed_articles_stmt_cnt).scalar()
         print(f"Total Articles : {cnt}")
         print(f"Row Limit: {ROW_LIMIT}")
+        ids_taken = []
         for idx, article in enumerate(rows):
             # for each article, try to find best matching article within ROW_LIMIT range
             voted_articles_stmt = (
@@ -119,9 +136,13 @@ def main():
             if not voted_articles:
                 continue
             similarities = generate_cross_similarities(
-                article, voted_articles, similarity_algo
+                article, voted_articles, similarity_algo,ids_taken
             )
+            if not similarities:  # if similaries is an empty sequence, skip
+                continue
             most_similar_id = max(similarities, key=lambda x: similarities.get(x))
+            if args.match_once:
+                ids_taken.append(most_similar_id)
             most_similar_article = list(
                 filter(lambda x: x.id == most_similar_id, voted_articles)
             )[0]
@@ -131,7 +152,9 @@ def main():
             article.voted_article = most_similar_article
             if ( idx ) % 1000 == 0:
                 print(f"Progress: {idx/cnt:.2f}")
-                sess.commit()
+        if not test_mode:
+            sess.commit()
+            print("Commited to DB :)")
 
 
 main()

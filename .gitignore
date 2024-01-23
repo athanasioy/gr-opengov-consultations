@@ -31,6 +31,8 @@ text_files/
 bu/
 pdf_files/
 embeddings/
+logs/
+.vscode/
 
 
 # PyInstaller

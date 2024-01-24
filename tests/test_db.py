@@ -42,7 +42,8 @@ def test_db_to_numpy():
     db_file = config.get('DEFAULT', 'db_file')
     engine = create_engine(db_file)
     articleId = -1    
-    vector = db_to_numpy(engine,-1)
+    with engine.connect() as conn:
+        vector = db_to_numpy(conn,-1)
     assert vector is not None
     assert isinstance(vector, np.ndarray)
     assert vector.shape == (100,)

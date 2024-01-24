@@ -29,15 +29,12 @@ def numpy_to_db_batch(conn, article_ids:list[int], vectors:list[np.ndarray], tok
     conn.execute(text(insertSql),insertParams)
     conn.commit()
     
-def db_to_numpy(engine, article_id:int) -> np.ndarray:
+def db_to_numpy(conn, article_id:int) -> np.ndarray:
     selectSql = """SELECT vector FROM ArticleEmbeddings WHERE articleId = :articleId"""
     selectParams = {}
     selectParams["articleId"] = article_id
-    with engine.connect() as conn:
-        rows = conn.execute(text(selectSql),selectParams)
-        for row in rows:
-            vector = np.frombuffer(row[0],dtype=float)
-            break
+    vector_blob = conn.execute(text(selectSql),selectParams).scalar_one()
+    vector = np.frombuffer(vector_blob,dtype=float)
         
     return vector
 

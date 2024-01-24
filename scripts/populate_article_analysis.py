@@ -150,7 +150,7 @@ def main():
                     FinalArticles.Text as FinalText,
                     FinalLegislation.date_posted as f_legislation_date_posted,
                     Article.comments_allowed,
-                    comments_count.total_comments
+                    COALESCE(comments_count.total_comments,0) as total_comments
             FROM Article
             INNER JOIN Legislation on Legislation.id = Article.legislation_id and Legislation.final_legislation_id is not NULL
             LEFT JOIN Legislation as FinalLegislation on FinalLegislation.id = Legislation.final_legislation_id
@@ -158,7 +158,7 @@ def main():
             LEFT JOIN (
                 SELECT Article.id, count(*) as total_comments
                 FROM Article
-                LEFT JOIN PublicConsultation on PublicConsultation.article_id = Article.id
+                INNER JOIN PublicConsultation on PublicConsultation.article_id = Article.id
                 GROUP by Article.id
             ) as comments_count on comments_count.id = Article.id
             where Article.number <> 999

@@ -1,10 +1,26 @@
 from typing import Protocol
 import numpy as np
+from sqlalchemy import create_engine, text
+from text_utils.helpers import db_to_numpy
 
 class Vectorizer(Protocol):
     def vectorize(self,s1:str) -> np.ndarray:
         """Produce a vector representation of String"""
 
+class FetchFromDBVectorizer:
+    def __init__(self,conn_string:str) -> None:
+        self._conn_string = conn_string
+        self._engine = create_engine(self._conn_string)
+
+    def vectorize(self, s:str) -> np.ndarray:
+        articleStmt = "SELECT id FROM Article where text = :text"
+        embdingStmt = "SELECT "
+        params = {}
+        params["text"] = s
+        with self._engine.connect() as conn:
+            article_id = conn.execute(text(articleStmt),params).scalar_one()
+            vector = db_to_numpy(conn,article_id)
+        return vector
 
 class JaccardSimilarity:
     method_name='Jaccard'

@@ -34,3 +34,8 @@ where is_public_consultation=1
 and legislation_type='bill'
 group by legislation_type,no_final_legislation_reason
 
+/* Count of Articles that map to a voted Bill*/
+SELECT count(1) FROM Article
+LEFT JOIN Legislation on Legislation.id = Article.legislation_id
+where Legislation.is_public_consultation = 1
+and Legislation.final_legislation_id is not NULL

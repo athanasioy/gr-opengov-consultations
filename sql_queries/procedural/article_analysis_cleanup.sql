@@ -292,5 +292,6 @@ DELETE FROM ArticleAnalysis WHERE p_articleNo = 999;
 DELETE FROM ArticleAnalysis
 WHERE p_articleID in (SELECT id FROM Article WHERE voted_article_id IS NULL);
 
-
-
+/* DELETE ArticleAnalysis rows were both proposed text and voted text is empty*/
+DELETE FROM ArticleAnalysis
+WHERE similarity_ratio=1

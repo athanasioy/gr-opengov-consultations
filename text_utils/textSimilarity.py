@@ -8,20 +8,32 @@ class Vectorizer(Protocol):
         """Produce a vector representation of String"""
 
 class FetchFromDBVectorizer:
-    def __init__(self,conn_string:str) -> None:
+    def __init__(self,conn_string:str,table_name:str) -> None:
         self._conn_string = conn_string
         self._engine = create_engine(self._conn_string)
+        self._embeddings:dict[str,np.ndarray] = {}
+        self._populate_embeddings(table_name)
 
-    def vectorize(self, s:str) -> np.ndarray:
-        articleStmt = "SELECT id FROM Article where text = :text"
-        embdingStmt = "SELECT "
-        params = {}
-        params["text"] = s
+    def _populate_embeddings(self,table_name) -> None:
+        sql_text = f"""
+        select articleId, Article.text from (
+                            select p_articleID as articleId from {table_name}
+                            UNION
+                            select f_articleID as articleId from {table_name}
+                    ) as a 
+                    left join Article on Article.id = a.articleId
+        """
         with self._engine.connect() as conn:
-            article_id = conn.execute(text(articleStmt),params).scalar_one()
-            vector = db_to_numpy(conn,article_id)
-        return vector
+            rows = conn.execute(text(sql_text))
+            for row in rows:
+                article_id = row[0]
+                article_text = row[1]
+                vector = db_to_numpy(conn, article_id)
+                self._embeddings.update({article_text:vector})
 
+                
+    def vectorize(self, s:str) -> np.ndarray:
+        return self._embeddings[s]
 class JaccardSimilarity:
     method_name='Jaccard'
     @staticmethod

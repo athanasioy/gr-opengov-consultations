@@ -26,7 +26,7 @@ def test_FetchFromDBVectorizer():
     config =ConfigParser()
     config.read('config.ini')
     sql_conn_string = config.get(section='DEFAULT', option='db_file')
-    vec = FetchFromDBVectorizer(sql_conn_string)
+    vec = FetchFromDBVectorizer(sql_conn_string,table_name="ArticleAnalysis")
     engine = create_engine(sql_conn_string)
 
     with engine.connect() as conn:

@@ -33,8 +33,12 @@ def db_to_numpy(conn, article_id:int) -> np.ndarray:
     selectSql = """SELECT vector FROM ArticleEmbeddings WHERE articleId = :articleId"""
     selectParams = {}
     selectParams["articleId"] = article_id
-    vector_blob = conn.execute(text(selectSql),selectParams).scalar_one()
-    vector = np.frombuffer(vector_blob,dtype=float)
+    try:
+        vector_blob = conn.execute(text(selectSql),selectParams).scalar_one()
+        vector = np.frombuffer(vector_blob,dtype=float)
+    except:
+        print(f'Failed to find embeddings for id {article_id}')
+        raise
         
     return vector
 

@@ -55,6 +55,10 @@ class CosineSimilarity:
     def calculate_similarity(self,s1:str,s2:str) -> float:
         v1 = self._vectorizer.vectorize(s1)
         v2 = self._vectorizer.vectorize(s2)
+        length_v1 = np.linalg.norm(v1)
+        length_v2 = np.linalg.norm(v2)
 
+        if length_v1==0 or length_v2==0:
+            return 0.0
         return np.dot(v1,v2)/(np.linalg.norm(v1)* np.linalg.norm(v2))
 

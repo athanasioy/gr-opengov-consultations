@@ -65,7 +65,4 @@ def text_to_numeric(text:str) -> int:
         ("τριακοστό δεύτερο",32)
     ]
     result = [x[1] for x in numbers_in_full_text if x[0]==text]
-    if result:
-        return int(result[0])
-    else:
-        return -1
+    return int(result[0]) if result else -1

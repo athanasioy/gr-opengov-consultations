@@ -7,7 +7,9 @@ print(module_path)
 if module_path not in sys.path:
     sys.path.append(module_path)
 
+import pytest
 from text_utils.textDecorators import RemoveNewLineDecorator, RemoveDashAndNewLineDecorator,TextDecoratorChainFactory, TrimWhiteSpaceDecorator, ReplaceWrongGreekMuCharacterDecorator
+from text_utils.helpers import text_to_numeric
 
 
 def test_newLine_removal() -> None:
@@ -48,3 +50,15 @@ def test_greek_mu_decorator()->None:
     decorator = ReplaceWrongGreekMuCharacterDecorator(None)
     s2 = decorator.execute(s2)
     assert s1 == s2
+
+@pytest.mark.parametrize("txt, result",[
+    ("πρώτο",1),
+    ("δεύτερο",2),
+    (None, -1),
+    ("σκουπίδι",-1),
+    ("έβδοµο",7), # micro sign
+    ("έβδομο",7), # greem mu character
+])
+def test_text_to_numeric(txt:str, result:int)->None:
+    assert text_to_numeric(txt) == result
+    

@@ -10,6 +10,7 @@ The relevant data is extract from
 
 Extracted data is held in a local relational `sqlite` database file.
 
+The database is freely available at [Zenodo](https://zenodo.org/records/10825289 "Zenodo Dataset URL") under  Creative Commons Attribution 4.0 license.
 ## Database Schema
 
 ## Repository Structure
